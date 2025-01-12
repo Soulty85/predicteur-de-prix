@@ -1,10 +1,14 @@
 import streamlit as st
 import pickle
-
+import pandas as pd
 # Chargement du modele
 with open('model.pkl', 'rb') as file:
     model = pickle.load(file)
 
+# chargement du scaler
+with open('scaler.pkl', 'rb') as file:
+    scaler = pickle.load(file)
+    
 # Fonction pour predire les prix
 def predict_price(features):
     prediction = model.predict([features])
@@ -91,8 +95,22 @@ for col, options in categories.items():
 input_features = []
 for feature in model.feature_names_in_:
     input_features.append(data.get(feature, 0))
+    
 
-# Bouton de prediction
+features_numeriques = ['Ram', 'Weight', 'screen_width', 'screen_height']
+
+
+# Convertir les données en DataFrame avec les mêmes noms de colonnes
+data_df = pd.DataFrame([data], columns=features_numeriques)
+
+# Appliquer la transformation
+data_scaled = scaler.transform(data_df)
+
+# Mettre à jour les valeurs dans le dictionnaire original
+for i, feature in enumerate(features_numeriques):
+    data[feature] = data_scaled[0][i]
+
+# Bouton de prediction  
 if st.button('Prédire le Prix'):
     price = predict_price(input_features)
     st.success(f"Prix prédit : {price:.2f} €")
