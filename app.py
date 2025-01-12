@@ -113,4 +113,4 @@ for i, feature in enumerate(features_numeriques):
 # Bouton de prediction  
 if st.button('Prédire le Prix'):
     price = predict_price(input_features)
-    st.success(f"Prix prédit : {price:.2f} €")
+    st.success(f"Prix prédit : {price:.2f} Franc CFA")
